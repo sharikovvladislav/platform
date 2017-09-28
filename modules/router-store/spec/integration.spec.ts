@@ -14,10 +14,13 @@ import {
 } from '../src/index';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/mapTo';
+import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/toPromise';
+import { of } from 'rxjs/observable/of';
 
 describe('integration spec', () => {
-  it('should work', done => {
+  it('should work', (done: any) => {
     const reducer = (state: string = '', action: RouterAction<any>) => {
       if (action.type === ROUTER_NAVIGATION) {
         return action.payload.routerState.url.toString();
@@ -59,7 +62,7 @@ describe('integration spec', () => {
       });
   });
 
-  it('should support preventing navigation', done => {
+  it('should support preventing navigation', (done: any) => {
     const reducer = (state: string = '', action: RouterAction<any>) => {
       if (
         action.type === ROUTER_NAVIGATION &&
@@ -95,7 +98,7 @@ describe('integration spec', () => {
       });
   });
 
-  it('should support rolling back if navigation gets canceled', done => {
+  it('should support rolling back if navigation gets canceled', (done: any) => {
     const reducer = (state: string = '', action: RouterAction<any>): any => {
       if (action.type === ROUTER_NAVIGATION) {
         return {
@@ -153,7 +156,7 @@ describe('integration spec', () => {
       });
   });
 
-  it('should support rolling back if navigation errors', done => {
+  it('should support rolling back if navigation errors', (done: any) => {
     const reducer = (state: string = '', action: RouterAction<any>): any => {
       if (action.type === ROUTER_NAVIGATION) {
         return {
@@ -213,7 +216,9 @@ describe('integration spec', () => {
       });
   });
 
-  it('should call navigateByUrl when resetting state of the routerReducer', done => {
+  it('should call navigateByUrl when resetting state of the routerReducer', (
+    done: any
+  ) => {
     const reducer = (state: any, action: RouterAction<any>) => {
       const r = routerReducer(state, action);
       return r && r.state
@@ -288,7 +293,9 @@ describe('integration spec', () => {
       });
   });
 
-  it('should support cancellation of initial navigation using canLoad guard', done => {
+  it('should support cancellation of initial navigation using canLoad guard', (
+    done: any
+  ) => {
     const reducer = (state: any, action: RouterAction<any>) => {
       const r = routerReducer(state, action);
       return r && r.state
@@ -317,7 +324,9 @@ describe('integration spec', () => {
       done();
     });
 
-    it('should support a custom RouterStateSnapshot serializer ', done => {
+    it('should support a custom RouterStateSnapshot serializer ', (
+      done: any
+    ) => {
       const reducer = (state: any, action: RouterAction<any>) => {
         const r = routerReducer(state, action);
         return r && r.state
@@ -369,6 +378,38 @@ describe('integration spec', () => {
           done();
         });
     });
+  });
+
+  it('should support event during an async canActivate guard', (done: any) => {
+    createTestModule({
+      reducers: { routerReducer },
+      canActivate: () => {
+        store.dispatch({ type: 'USER_EVENT' });
+        return store.take(1).mapTo(true);
+      },
+    });
+
+    const router: Router = TestBed.get(Router);
+    const store: Store<any> = TestBed.get(Store);
+    const log = logOfRouterAndStore(router, store);
+
+    router
+      .navigateByUrl('/')
+      .then(() => {
+        log.splice(0);
+        return router.navigateByUrl('next');
+      })
+      .then(() => {
+        expect(log).toEqual([
+          { type: 'router', event: 'NavigationStart', url: '/next' },
+          { type: 'router', event: 'RoutesRecognized', url: '/next' },
+          { type: 'store', state: undefined }, // after ROUTER_NAVIGATION
+          { type: 'store', state: undefined }, // after USER_EVENT
+          { type: 'router', event: 'NavigationEnd', url: '/next' },
+        ]);
+
+        done();
+      });
   });
 });
 

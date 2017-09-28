@@ -14,16 +14,16 @@ import * as Auth from '../../auth/actions/auth';
   template: `
     <bc-layout>
       <bc-sidenav [open]="showSidenav$ | async">
-        <bc-nav-item (activate)="closeSidenav()" *ngIf="loggedIn$ | async" routerLink="/" icon="book" hint="View your book collection">
+        <bc-nav-item (navigate)="closeSidenav()" *ngIf="loggedIn$ | async" routerLink="/" icon="book" hint="View your book collection">
           My Collection
         </bc-nav-item>
-        <bc-nav-item (activate)="closeSidenav()" *ngIf="loggedIn$ | async" routerLink="/books/find" icon="search" hint="Find your next book!">
+        <bc-nav-item (navigate)="closeSidenav()" *ngIf="loggedIn$ | async" routerLink="/books/find" icon="search" hint="Find your next book!">
           Browse Books
         </bc-nav-item>
-        <bc-nav-item (activate)="closeSidenav()" *ngIf="!(loggedIn$ | async)">
+        <bc-nav-item (navigate)="closeSidenav()" *ngIf="!(loggedIn$ | async)">
           Sign In
-        </bc-nav-item>        
-        <bc-nav-item (activate)="logout()" *ngIf="loggedIn$ | async">
+        </bc-nav-item>
+        <bc-nav-item (navigate)="logout()" *ngIf="loggedIn$ | async">
           Sign Out
         </bc-nav-item>
       </bc-sidenav>
@@ -55,11 +55,11 @@ export class AppComponent {
      * updates and user interaction through the life of our
      * application.
      */
-    this.store.dispatch(new layout.CloseSidenavAction());
+    this.store.dispatch(new layout.CloseSidenav());
   }
 
   openSidenav() {
-    this.store.dispatch(new layout.OpenSidenavAction());
+    this.store.dispatch(new layout.OpenSidenav());
   }
 
   logout() {

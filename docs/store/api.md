@@ -140,10 +140,12 @@ import * as fromFeature from './reducers';
 
 export const FEATURE_REDUCER_TOKEN = new InjectionToken<ActionReducerMap<fromFeature.State>>('Feature Reducers');
 
-// map of reducers
-export const reducers: ActionReducerMap<fromFeature.State> = {
-
-};
+export function getReducers(): ActionReducerMap<fromFeature.State> {
+  // map of reducers
+  return {
+  
+  };
+}
 
 @NgModule({
   imports: [
@@ -152,9 +154,35 @@ export const reducers: ActionReducerMap<fromFeature.State> = {
   providers: [
     {
       provide: FEATURE_REDUCER_TOKEN,
-      useValue: reducers
+      useFactory: getReducers
     }
   ]
 })
 export class FeatureModule { }
+```
+
+## Injecting Meta-Reducers
+
+To inject meta reducers, use the `META_REDUCERS` injection token exported in
+the Store API and a `Provider` to register the meta reducers through dependency
+injection.
+
+```ts
+import { MetaReducer, META_REDUCERS } from '@ngrx/store';
+import { SomeService } from './some.service';
+
+export function getMetaReducers(some: SomeService): MetaReducer[] {
+  // return array of meta reducers;
+}
+
+@NgModule({
+  providers: [
+    {
+      provide: META_REDUCERS,
+      deps: [SomeService],
+      useFactory: getMetaReducers
+    }
+  ]
+})
+export class AppModule {}
 ```

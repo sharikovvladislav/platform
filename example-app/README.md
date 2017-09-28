@@ -1,7 +1,7 @@
 # @ngrx example application
 
 Example application utilizing @ngrx libraries, showcasing common patterns and best practices.
-Take a look at the [live app](http://ngrx.github.io/example-app/).
+Take a look at the [live app](https://ngrx.github.io/platform/example-app/).
 
 This app is a book collection manager. The user can authenticate, use the Google Books API to search for
 books and add them to their collection. This application utilizes [@ngrx/db](https://github.com/ngrx/db)
@@ -18,6 +18,7 @@ Built with [@angular/cli](https://github.com/angular/angular-cli)
  - [@angular/router](https://github.com/angular/angular) - Angular Router
  - [@ngrx/db](https://github.com/ngrx/db) - RxJS powered IndexedDB for Angular apps
  - [@ngrx/store-devtools](https://github.com/ngrx/store-devtools) - Instrumentation for @ngrx/store enabling time-travel debugging
+ - [jest](https://facebook.github.io/jest/) - JavaScript test runner with easy setup, isolated browser testing and snapshot testing
 
 ### Quick start
 
@@ -25,20 +26,18 @@ Built with [@angular/cli](https://github.com/angular/angular-cli)
 # clone the repo
 git clone https://github.com/ngrx/platform.git
 
-# Use npm or yarn to install the dependencies:
-npm install
-
-# OR
+# Install the dependencies:
 yarn
 
 # start the server
-npm run build && npm run cli -- serve
+yarn run build && yarn run cli -- serve
 
 # OR
 yarn run example:start
 ```
 
-Navigate to [http://localhost:4200/](http://localhost:4200/) in your browser
+Navigate to [http://localhost:4200/](http://localhost:4200/) in your browser. To login, the username and password is `test`.
+ 
 
 _NOTE:_ The above setup instructions assume you have added local npm bin folders to your path.
 If this is not the case you will need to install the Angular CLI globally.
